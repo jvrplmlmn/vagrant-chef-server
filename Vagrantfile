@@ -11,4 +11,12 @@ Vagrant.configure(2) do |config|
     override.vm.network :forwarded_port, guest: 443, host: 443
   end
 
+  config.vm.provision :shell, :privileged => true, :inline => <<-SCRIPT
+    VERSION=12.4.1-1
+    PACKAGE="chef-server-core_${VERSION}_amd64.deb"
+    wget --no-check-certificate https://packages.chef.io/stable/ubuntu/14.04/${PACKAGE} -O /vagrant/${PACKAGE}
+    dpkg -i /vagrant/${PACKAGE}
+    chef-server-ctl reconfigure
+  SCRIPT
+
 end
